@@ -7,7 +7,9 @@ const server = http.createServer((req, res) => {
 
   if (req.url === "/") {
     res.writeHead(200, { "Content-Type": "text/plain" });
-    res.end("add /users to the url to get the json data");
+    res.end(
+      "add /users to the url to get the json data.\n if you want to access only the first user id add/users1"
+    );
   } else if (req.url === "/users") {
     const filePath = path.join(__dirname, "data.json");
 
@@ -18,6 +20,19 @@ const server = http.createServer((req, res) => {
       } else {
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(data);
+      }
+    });
+  } else if (req.url === "/users1") {
+    const filePath = path.join(__dirname, "data.json");
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Server Error");
+      } else {
+        const users = JSON.parse(data);
+        const firstuser = users[0];
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify(firstuser));
       }
     });
   } else {
